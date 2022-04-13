@@ -1,0 +1,8 @@
+{
+  "name": "vamos-vacinar-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:doug-22/vamos-vacinar-backend.git",
+  "author": "Douglas Oliveira <douglas.aguiar410@gmail.com>",
+  "license": "MIT"
+}
