@@ -5,6 +5,9 @@
   "repository": "git@github.com:doug-22/vamos-vacinar-backend.git",
   "author": "Douglas Oliveira <douglas.aguiar410@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.3",
