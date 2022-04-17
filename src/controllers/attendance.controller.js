@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require("uuid");
-const Compare = require("../functions/compare.function");
+const Organize = require("../functions/organizeAppointments.function");
 
 const attendance = require("../models/attendance.model");
 const database = require("../config/database");
@@ -16,19 +16,19 @@ module.exports = {
     const newAttendance = Object.create(attendance);
     newAttendance.id = uuidv4();
     newAttendance.name = name;
-    newAttendance.birthDate = birthDate;
-    newAttendance.dateAppointment = dateAppointment;
+    newAttendance.birthDate = birthDate.substr(0,10);
+    newAttendance.dateAppointment = dateAppointment.substr(0,10);
     newAttendance.time = time;
     newAttendance.vaccinated = vaccinated;
   
     //check if the database is empty
     if(database.length === 0){
       //add appointment date to date list
-      arrayDates.push(dateAppointment);
+      arrayDates.push(dateAppointment.substr(0,10));
       //create a new day of attendances, with the date and attendances list
       const newDay = Object.create(day);
       newDay.id = uuidv4();
-      newDay.date = dateAppointment;
+      newDay.date = dateAppointment.substr(0,10);
       arrayAttendances.push(newAttendance);
       newDay.attendanceData = arrayAttendances;
       //add to database
@@ -39,13 +39,13 @@ module.exports = {
       //maps the data
       database.map((item) => {
         //check if date list includes the date appointment
-        if(arrayDates.includes(dateAppointment)){
+        if(arrayDates.includes(dateAppointment.substr(0,10))){
           //if the date exists and is equal to the registered date, add a new attendance to the list of attendances
-          if(item.date === dateAppointment){
+          if(item.date === dateAppointment.substr(0,10)){
             //check if reached number of vacancies
             if(item.attendanceData.length < 20){
               item.attendanceData.push(newAttendance);
-              item.attendanceData.sort(Compare.compare);
+              item.attendanceData.sort(Organize.organizeAppointments);
             }else{
               return res.status(400).json({
                 error: true,
@@ -56,13 +56,14 @@ module.exports = {
         //if not include, its a new day with new attendances
         }else{
           //add appointment date to date list
-          arrayDates.push(dateAppointment)
+          arrayDates.push(dateAppointment.substr(0,10))
           //create a new day of attendances, with the date and new attendances list
           const newDay = Object.create(day)
           arrayAttendances = [];
-          newDay.date = dateAppointment;
+          newDay.id = uuidv4();
+          newDay.date = dateAppointment.substr(0,10);
           arrayAttendances.push(newAttendance);
-          arrayAttendances.sort(Compare.compare);
+          arrayAttendances.sort(Organize.organizeAppointments);
           newDay.attendanceData = arrayAttendances;
           //add to database the new day
           database.push(newDay);
