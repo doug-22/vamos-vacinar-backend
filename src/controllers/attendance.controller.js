@@ -6,9 +6,28 @@ const database = require("../config/database");
 const arrayDates = require("../utils/arrayDates.util");
 let arrayAttendances = require("../utils/arrayAttendances.util");
 const day = require("../models/day.model");
+const res = require("express/lib/response");
 
 
 module.exports = {
+  index(req, res) {
+    return res.json(database);
+  },
+  listAppointmentByDay(req, res) {
+    const requestedDate = req.query.dia;
+    if(arrayDates.includes(requestedDate)){
+      database.map((value) => {
+        if(value.date === requestedDate){
+          res.json(value);
+        }
+      });
+    }else{
+      return res.json({
+        message: "Estas são as datas com agendamentos",
+        dates: arrayDates
+      });
+    }
+  },
   createAttendence(req, res) {
     const name = req.body.name;
     const birthDate = req.body.birthDate.substr(0,10).split("-").reverse().join("-");
