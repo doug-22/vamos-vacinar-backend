@@ -28,7 +28,7 @@ module.exports = {
       });
     }
   },
-  createAttendence(req, res) {
+  createAttendance(req, res) {
     const name = req.body.name;
     const birthDate = req.body.birthDate.substr(0,10).split("-").reverse().join("-");
     const dateAppointment = req.body.dateAppointment.substr(0,10).split("-").reverse().join("-");
@@ -98,6 +98,17 @@ module.exports = {
         }
       })
     }
+  },
+  editAttendance(req, res) {
+    const id = req.params.id;
+    database.map((day) => {
+      day.attendanceData.map((patient) => {
+        if(patient.id === id){
+          patient.vaccinated = req.body.vaccinated;
+          return res.json(patient)
+        }
+      })
+    })
   }
 }
 
