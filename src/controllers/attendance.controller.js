@@ -10,25 +10,29 @@ const day = require("../models/day.model");
 
 module.exports = {
   createAttendence(req, res) {
-    const {name, birthDate, dateAppointment, time, vaccinated} = req.body;
+    const name = req.body.name;
+    const birthDate = req.body.birthDate.substr(0,10).split("-").reverse().join("-");
+    const dateAppointment = req.body.dateAppointment.substr(0,10).split("-").reverse().join("-");
+    const time = req.body.time;
+    const vaccinated = req.body.vaccinated;
   
     //create a new attendance
     const newAttendance = Object.create(attendance);
     newAttendance.id = uuidv4();
     newAttendance.name = name;
-    newAttendance.birthDate = birthDate.substr(0,10);
-    newAttendance.dateAppointment = dateAppointment.substr(0,10);
+    newAttendance.birthDate = birthDate;
+    newAttendance.dateAppointment = dateAppointment;
     newAttendance.time = time;
     newAttendance.vaccinated = vaccinated;
   
     //check if the database is empty
     if(database.length === 0){
       //add appointment date to date list
-      arrayDates.push(dateAppointment.substr(0,10));
+      arrayDates.push(dateAppointment);
       //create a new day of attendances, with the date and attendances list
       const newDay = Object.create(day);
       newDay.id = uuidv4();
-      newDay.date = dateAppointment.substr(0,10);
+      newDay.date = dateAppointment;
       arrayAttendances.push(newAttendance);
       newDay.attendanceData = arrayAttendances;
       //add to database
@@ -39,29 +43,34 @@ module.exports = {
       //maps the data
       database.map((item) => {
         //check if date list includes the date appointment
-        if(arrayDates.includes(dateAppointment.substr(0,10))){
+        if(arrayDates.includes(dateAppointment)){
           //if the date exists and is equal to the registered date, add a new attendance to the list of attendances
-          if(item.date === dateAppointment.substr(0,10)){
+          if(item.date === dateAppointment){
             //check if reached number of vacancies
-            if(item.attendanceData.length < 20){
-              item.attendanceData.push(newAttendance);
-              item.attendanceData.sort(Organize.organizeAppointments);
-            }else{
+            if(!(item.attendanceData.length < 20)){
               return res.status(400).json({
                 error: true,
                 message: "Error: Vacancy limit reached, try another date!"
-              })
+                });
+            }else{
+              item.attendanceData.push(newAttendance);
+              item.attendanceData.sort(Organize.organizeAppointments);
+
+              res.status(200).json({
+                error: false,
+                message: "Vaccination successfully registered"
+              });
             }
           }
         //if not include, its a new day with new attendances
         }else{
           //add appointment date to date list
-          arrayDates.push(dateAppointment.substr(0,10))
+          arrayDates.push(dateAppointment)
           //create a new day of attendances, with the date and new attendances list
           const newDay = Object.create(day)
           arrayAttendances = [];
           newDay.id = uuidv4();
-          newDay.date = dateAppointment.substr(0,10);
+          newDay.date = dateAppointment;
           arrayAttendances.push(newAttendance);
           arrayAttendances.sort(Organize.organizeAppointments);
           newDay.attendanceData = arrayAttendances;
@@ -70,10 +79,6 @@ module.exports = {
         }
       })
     }
-    return res.status(200).json({
-      error: false,
-      message: "Vaccination successfully registered"
-    });
   }
 }
 
