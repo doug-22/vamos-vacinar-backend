@@ -2,6 +2,7 @@
 const Day = {
   id: String,
   date: String,
+  attendanceTimes: Array,
   attendanceData: Array
 }
 

@@ -4,9 +4,7 @@ const Organize = require("../functions/organizeAppointments.function");
 const attendance = require("../models/attendance.model");
 const database = require("../config/database");
 const arrayDates = require("../utils/arrayDates.util");
-let arrayAttendances = require("../utils/arrayAttendances.util");
 const day = require("../models/day.model");
-const res = require("express/lib/response");
 
 
 module.exports = {
@@ -43,60 +41,61 @@ module.exports = {
     newAttendance.dateAppointment = dateAppointment;
     newAttendance.time = time;
     newAttendance.vaccinated = vaccinated;
+
+    //check if date list includes the date appointment
+    if(arrayDates.includes(dateAppointment)){
+      //maps the database
+      database.map((item) => {
+        //if the date exists and is equal to the registered date, add a new attendance to the list of attendances
+        if(item.date === dateAppointment){
+          //check if reached number of vacancies
+          if(!(item.attendanceData.length < 20)){
+            return res.status(400).json({
+              error: true,
+              message: "Error: Vacancy limit reached, try another date!"
+              });
+          }else{
+            //Checks if the number of appointments for the requested time has been reached
+            const countOccurrences = Organize.countOccurrences(item.attendanceTimes, newAttendance.time);
+            if(countOccurrences === 2){
+              res.status(400).json({
+                error: false,
+                message: "Error: Appointments limit for selected time reached!"
+              });
+            }else{
+              item.attendanceData.push(newAttendance);
+              item.attendanceData.sort(Organize.organizeAppointments);
+              item.attendanceTimes.push(newAttendance.time);
   
-    //check if the database is empty
-    if(database.length === 0){
+              res.status(200).json({
+                error: false,
+                message: "Vaccination successfully registered!"
+              })
+            };
+          }
+        }
+      })
+    //if not include, its a new day with new attendances
+    }else{
       //add appointment date to date list
       arrayDates.push(dateAppointment);
       //create a new day of attendances, with the date and attendances list
       const newDay = Object.create(day);
       newDay.id = uuidv4();
       newDay.date = dateAppointment;
+      let arrayAttendances = [];
+      let arrayTimes = [];
+      arrayTimes.push(newAttendance.time);
       arrayAttendances.push(newAttendance);
       newDay.attendanceData = arrayAttendances;
+      newDay.attendanceTimes = arrayTimes;
       //add to database
       database.push(newDay)
-    
-    //if database not empty
-    }else{
-      //maps the data
-      database.map((item) => {
-        //check if date list includes the date appointment
-        if(arrayDates.includes(dateAppointment)){
-          //if the date exists and is equal to the registered date, add a new attendance to the list of attendances
-          if(item.date === dateAppointment){
-            //check if reached number of vacancies
-            if(!(item.attendanceData.length < 20)){
-              return res.status(400).json({
-                error: true,
-                message: "Error: Vacancy limit reached, try another date!"
-                });
-            }else{
-              item.attendanceData.push(newAttendance);
-              item.attendanceData.sort(Organize.organizeAppointments);
 
-              res.status(200).json({
-                error: false,
-                message: "Vaccination successfully registered"
-              });
-            }
-          }
-        //if not include, its a new day with new attendances
-        }else{
-          //add appointment date to date list
-          arrayDates.push(dateAppointment)
-          //create a new day of attendances, with the date and new attendances list
-          const newDay = Object.create(day)
-          arrayAttendances = [];
-          newDay.id = uuidv4();
-          newDay.date = dateAppointment;
-          arrayAttendances.push(newAttendance);
-          arrayAttendances.sort(Organize.organizeAppointments);
-          newDay.attendanceData = arrayAttendances;
-          //add to database the new day
-          database.push(newDay);
-        }
-      })
+      res.status(200).json({
+        error: false,
+        message: "Vaccination successfully registered!"
+      });
     }
   },
   editAttendance(req, res) {
