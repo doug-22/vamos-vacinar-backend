@@ -5,5 +5,9 @@ module.exports = {
     if (itemA.time > itemB.time)
       return 1;
     return 0;
+  },
+  countOccurrences(list, hour){
+    let count = list.filter(x => x === hour).length;
+    return count;
   }
 };

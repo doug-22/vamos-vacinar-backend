@@ -4,7 +4,6 @@ const Organize = require("../functions/organizeAppointments.function");
 const attendance = require("../models/attendance.model");
 const database = require("../config/database");
 const arrayDates = require("../utils/arrayDates.util");
-let arrayAttendances = require("../utils/arrayAttendances.util");
 const day = require("../models/day.model");
 
 
@@ -56,13 +55,23 @@ module.exports = {
               message: "Error: Vacancy limit reached, try another date!"
               });
           }else{
-            item.attendanceData.push(newAttendance);
-            item.attendanceData.sort(Organize.organizeAppointments);
-
-            res.status(200).json({
-              error: false,
-              message: "Vaccination successfully registered"
-            });
+            //Checks if the number of appointments for the requested time has been reached
+            const countOccurrences = Organize.countOccurrences(item.attendanceTimes, newAttendance.time);
+            if(countOccurrences === 2){
+              res.status(400).json({
+                error: false,
+                message: "Error: Appointments limit for selected time reached!"
+              });
+            }else{
+              item.attendanceData.push(newAttendance);
+              item.attendanceData.sort(Organize.organizeAppointments);
+              item.attendanceTimes.push(newAttendance.time);
+  
+              res.status(200).json({
+                error: false,
+                message: "Vaccination successfully registered!"
+              })
+            };
           }
         }
       })
@@ -74,15 +83,18 @@ module.exports = {
       const newDay = Object.create(day);
       newDay.id = uuidv4();
       newDay.date = dateAppointment;
-      arrayAttendances = [];
+      let arrayAttendances = [];
+      let arrayTimes = [];
+      arrayTimes.push(newAttendance.time);
       arrayAttendances.push(newAttendance);
       newDay.attendanceData = arrayAttendances;
+      newDay.attendanceTimes = arrayTimes;
       //add to database
       database.push(newDay)
 
       res.status(200).json({
         error: false,
-        message: "Vaccination successfully registered"
+        message: "Vaccination successfully registered!"
       });
     }
   },
