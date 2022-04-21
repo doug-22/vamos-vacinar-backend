@@ -42,4 +42,13 @@ describe("Testing api routes", () => {
     expect(res.body.dates.length).toBeGreaterThanOrEqual(1);
     expect(res.body.message).toBe("Estas são as datas com agendamentos")
   });
+
+  it("should be able return the attendances by date", async () => {
+    const res = await request(app)
+      .get("/api/agendamento?dia=25-04-2022");
+  
+    expect(res.body).toHaveProperty("id");
+    expect(res.body.date).toEqual("25-04-2022");
+    expect(res.body.attendanceData.length).toBeGreaterThanOrEqual(1);
+  });
 })
