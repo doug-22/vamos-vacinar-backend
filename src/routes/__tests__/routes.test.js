@@ -24,4 +24,15 @@ describe("Testing api routes", () => {
     expect(res.body).toHaveProperty("error");
     expect(res.body.error).toBeFalsy;
   });
+
+  it("should be able return the database with one register", async () => {
+    const res = await request(app).get("/");
+    res.body.map(item => (
+      expect(item).toHaveProperty("id"),
+      expect(item.attendanceData.length).toBeGreaterThanOrEqual(1),
+      item.attendanceData.map(attendance => (
+        expect(attendance).toHaveProperty("id")
+      ))
+    ))
+  });
 })
