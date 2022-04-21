@@ -6,7 +6,7 @@
   "author": "Douglas Oliveira <douglas.aguiar410@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

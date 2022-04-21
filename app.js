@@ -10,6 +10,4 @@ app.use(express.json());
 
 app.use(routes);
 
-app.listen(8080, () => {
-    console.log(`Server is running on port 8080: http://localhost:8080/${process.env.PORT}`);
-});
+module.exports = app;
