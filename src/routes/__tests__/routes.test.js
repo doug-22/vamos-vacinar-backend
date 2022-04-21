@@ -51,4 +51,28 @@ describe("Testing api routes", () => {
     expect(res.body.date).toEqual("25-04-2022");
     expect(res.body.attendanceData.length).toBeGreaterThanOrEqual(1);
   });
-})
+
+  it("should be able to return an error if you try to register more than two appointments for the same day and time", async () => {
+    await request(app)
+      .post("/api/cadastro")
+      .send({
+        name: "Fulado da Silva",
+        birthDate: "1998-09-15",
+        dateAppointment: "2022-04-25",
+        time: "08:00",
+        vaccinated: false
+      });
+    
+    const res = await request(app)
+      .post("/api/cadastro")
+      .send({
+        name: "Ciclano Santos",
+        birthDate: "1998-06-20",
+        dateAppointment: "2022-04-25",
+        time: "08:00",
+        vaccinated: false
+    });
+
+    expect(res.body.error).toBeTruthy;
+  });
+});

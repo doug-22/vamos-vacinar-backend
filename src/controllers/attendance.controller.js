@@ -59,7 +59,7 @@ module.exports = {
             const countOccurrences = Organize.countOccurrences(item.attendanceTimes, newAttendance.time);
             if(countOccurrences === 2){
               res.status(400).json({
-                error: false,
+                error: true,
                 message: "Error: Appointments limit for selected time reached!"
               });
             }else{
