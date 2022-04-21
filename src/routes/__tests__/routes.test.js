@@ -15,7 +15,7 @@ describe("Testing api routes", () => {
       .send({
         name: "Douglas Aguiar Oliveira",
         birthDate: "1998-10-31",
-        dateAppointment: "2022-04-22",
+        dateAppointment: "2022-04-25",
         time: "08:00",
         vaccinated: false
       });
@@ -34,5 +34,12 @@ describe("Testing api routes", () => {
         expect(attendance).toHaveProperty("id")
       ))
     ))
+  });
+
+  it("should be able to return the dates of registered appointments", async () => {
+    const res = await request(app).get("/api/agendamento");
+
+    expect(res.body.dates.length).toBeGreaterThanOrEqual(1);
+    expect(res.body.message).toBe("Estas são as datas com agendamentos")
   });
 })
