@@ -170,4 +170,20 @@ describe("Testing api routes", () => {
     expect(res.body).toHaveProperty("error");
     expect(res.body.error).toBeTruthy;
   });
+
+  it("should be able to delete attendances", async () => {
+    const res = await request(app)
+      .delete("/api/deletar_agendamentos?dia=25-04-2022");
+
+    expect(res.body).toHaveProperty("error");
+    expect(res.body.error).toBeFalsy;
+  });
+
+  it("should be able to return an error if trying to delete unregistered appointments", async () => {
+    const res = await request(app)
+      .delete("/api/deletar_agendamentos?dia=25-04-2022");
+
+    expect(res.body).toHaveProperty("error");
+    expect(res.body.error).toBeTruthy;
+  });
 });
