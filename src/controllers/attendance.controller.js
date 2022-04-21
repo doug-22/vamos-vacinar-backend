@@ -108,6 +108,28 @@ module.exports = {
         }
       })
     })
+  },
+  deleteAttendance(req, res) {
+    const day = req.query.dia;
+    if(arrayDates.includes(day)){
+      database.map((value, index) => {
+        if(value.date === day){
+          const indexInArrayDates = arrayDates.indexOf(day);
+          database.splice(index, 1);
+          arrayDates.splice(indexInArrayDates, 1);
+          return res.json({
+            error: false,
+            message: "Os agendamentos selecionados foram deletados do banco de dados!"
+          });
+        }
+      });
+    }else{
+      return res.json({
+        error: true,
+        message: "A data indicada não contém agendamentos!"
+      });
+    }
   }
 }
+
 
