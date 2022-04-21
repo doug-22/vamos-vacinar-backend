@@ -52,6 +52,29 @@ describe("Testing api routes", () => {
     expect(res.body.attendanceData.length).toBeGreaterThanOrEqual(1);
   });
 
+  it("should be able to edit a appointment", async () => {
+    //Fetching the id of an appointment
+    const attendance = await request(app).get("/");
+    let id;
+    attendance.body.map(item => (
+      expect(item).toHaveProperty("id"),
+      expect(item.attendanceData.length).toBeGreaterThanOrEqual(1),
+      item.attendanceData.map(attendance => (
+        id = attendance.id
+      ))
+    ))
+    //-----
+
+    const res = await request(app)
+      .put(`/api/editar/${id}`)
+      .send({
+        vaccinated: true
+      });
+
+    expect(res.body).toHaveProperty("id");
+    expect(res.body.vaccinated).toBeTruthy;
+  });
+
   it("should be able to return an error if you try to register more than two appointments for the same day and time", async () => {
     await request(app)
       .post("/api/cadastro")
