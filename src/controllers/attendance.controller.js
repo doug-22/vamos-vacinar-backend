@@ -117,14 +117,14 @@ module.exports = {
           const indexInArrayDates = arrayDates.indexOf(day);
           database.splice(index, 1);
           arrayDates.splice(indexInArrayDates, 1);
-          return res.json({
+          return res.status(200).json({
             error: false,
             message: "Os agendamentos selecionados foram deletados do banco de dados!"
           });
         }
       });
     }else{
-      return res.json({
+      return res.status(400).json({
         error: true,
         message: "A data indicada não contém agendamentos!"
       });
