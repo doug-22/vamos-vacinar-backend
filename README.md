@@ -64,6 +64,9 @@ Rode o seguinte comando para ver a aplicação:
 yarn dev
 ```
 A aplicação estará disponível em `http://localhost:8080/`.
+<br/>
+<br/>
+Também é possível ver o banck-end em produção clicando [aqui](https://vamos-vacinar-backend.herokuapp.com/).
 
 ## ‍:man_technologist: Autor
 
