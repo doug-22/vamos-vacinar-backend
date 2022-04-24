@@ -66,7 +66,7 @@ yarn dev
 A aplicação estará disponível em `http://localhost:8080/`.
 <br/>
 <br/>
-Também é possível ver o banck-end em produção clicando [aqui](https://vamos-vacinar-backend.herokuapp.com/).
+Também é possível ver o back-end em produção clicando [aqui](https://vamos-vacinar-backend.herokuapp.com/).
 
 ## ‍:man_technologist: Autor
 
