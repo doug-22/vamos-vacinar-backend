@@ -1,10 +1,12 @@
 const { v4: uuidv4 } = require("uuid");
+const axios = require('axios')
 const Organize = require("../functions/organizeAppointments.function");
 
 const attendance = require("../models/attendance.model");
 const database = require("../config/database");
 const arrayDates = require("../utils/arrayDates.util");
 const day = require("../models/day.model");
+require("dotenv").config();
 
 
 module.exports = {
@@ -127,6 +129,41 @@ module.exports = {
       return res.status(400).json({
         error: true,
         message: "A data indicada não contém agendamentos!"
+      });
+    }
+  },
+  async getAccessToken(req, res) {
+    try {
+      const body = {
+        code: req.body.code,
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET,
+        redirect_uri: process.env.REDIRECT_URI,
+      }
+
+      const response = await axios.post(
+        process.env.URL_GITHUB,
+        body,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      const params = new URLSearchParams(response.data)
+      const access_token = params.get('access_token')
+      if(!access_token) {
+        return res.status(400).json({
+          message: "Código inválido!"
+        })
+      }
+      return res.status(200).json({
+        access_token: access_token
+      })
+    } catch (err) {
+      return res.status(400).json({
+        error: true,
+        message: "Erro ao buscar token de acecsso!"
       });
     }
   }
