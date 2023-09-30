@@ -9,5 +9,6 @@ routes.get("/api/agendamento", Attendance.listAppointmentByDay);
 routes.post("/api/cadastro", Attendance.createAttendance);
 routes.put("/api/editar/:id", Attendance.editAttendance);
 routes.delete("/api/deletar_agendamentos", Attendance.deleteAttendance);
+routes.post("/getaccesstoken", Attendance.getAccessToken);
 
 module.exports = routes;
