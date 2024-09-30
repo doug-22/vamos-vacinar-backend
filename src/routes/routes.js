@@ -12,7 +12,7 @@ routes.put("/api/editar/:id", Attendance.editAttendance);
 routes.delete("/api/deletar_agendamentos", Attendance.deleteAttendance);
 routes.post("/getaccesstoken", Attendance.getAccessToken);
 
-routes.post("/api/thullo/login", Thullo.login);
-routes.get("/api/thullo/user", Thullo.user);
+// routes.post("/api/thullo/login", Thullo.login);
+// routes.get("/api/thullo/user", Thullo.user);
 
 module.exports = routes;
