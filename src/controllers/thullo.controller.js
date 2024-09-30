@@ -4,7 +4,6 @@ localStorage = new LocalStorage('./scratch');
 module.exports = {
   async login(req, res) {
     await new Promise(resolve => setTimeout(resolve, 3000));
-    console.log(req.body)
     localStorage.setItem('login', JSON.stringify(req.body))
     return res.status(200).json({
       error: false,
